@@ -1,6 +1,51 @@
 # Smart Form
 
-A form component with child components that utilize the react-hook-form library.
+Smart Form component is a developer-friendly solution for integrating form controls into your React project
+
+By leveraging the power of the [react-hook-form](https://react-hook-form.com/) library, it provides a reliable and efficient way to handle form validation and error handling. With automatic registration of form fields, the Smart Form component simplifies the development process and enables you to create robust and seamless forms with ease.
+
+## [Live Preview](https://smart-form-demo.netlify.app/)
+
+## Examples
+
+### Form With Uncontrolled Fields
+
+```tsx
+<Form onSubmit={handleSubmit}>
+  <FormField label="Name" name="name">
+    <input />
+  </FormField>
+  <FormField label="Email" name="email">
+    <input />
+  </FormField>
+  <button type="submit">Submit</button>
+</Form>
+```
+
+### Form With Controlled Fields
+
+This example demonstrates how to use the FormField component with either component libraries or custom input components.
+
+```tsx
+<Form onSubmit={handleSubmit}>
+  <FormField
+    controlled
+    label="username"
+    name="username"
+    options={{
+      required: "Please input your username!",
+    }}
+  >
+    {(props) => (
+      <input
+        value={props.field.value}
+        onChange={(e) => props.field.onChange(e.target.value)}
+      />
+    )}
+  </FormField>
+  <button type="submit">Submit</button>
+</Form>
+```
 
 ## Folder Structure
 

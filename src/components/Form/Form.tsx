@@ -35,8 +35,12 @@ type FormProps<T extends FieldValues> = BaseProps<T> &
  * A form element with child components that utilize the react-hook-form library
  * @example
  *<Form onSubmit={onSubmit}>
- *  <FormItem label="Name" name="name" />
- *  <FormItem label="Email" name="email" />
+ *  <FormField label="Name" name="name" >
+ *    <Input />
+ *  </FormField>
+ *  <FormField label="Email" name="email" >
+ *    <Input />
+ *  </FormField>
  *  <button type="submit">Submit</button>
  *</Form>
  */
