@@ -94,12 +94,9 @@ const Form = <T extends FieldValues>({
             ...rest
           } = props;
           const error = props.name ? errors[props.name] : undefined;
-          const formRegister = props.name
-            ? register(props.name, props.options)
-            : undefined;
 
           return React.cloneElement<FormFieldProps<T>>(clonedChild, {
-            register: registerFromProps ?? formRegister,
+            register: registerFromProps ?? register,
             error: errorFromProps ?? error,
             ...rest,
           });

@@ -15,8 +15,37 @@ By leveraging the power of the [react-hook-form](https://react-hook-form.com/) l
   <FormField label="Name" name="name">
     <input />
   </FormField>
-  <FormField label="Email" name="email">
-    <input />
+  <FormField label="Favorite Fruit:" name="favoriteFruit">
+    <label>
+      Apple
+      <input type="radio" value="Apple" />
+    </label>
+    <label>
+      Orange
+      <input type="radio" value="Orange" />
+    </label>
+    <label>
+      Banana
+      <input type="radio" value="Banana" />
+    </label>
+  </FormField>
+  <FormField label="Hobbies:" name="hobbies">
+    <label>
+      Swimming
+      <input type="checkbox" name="hobbies.swimming" />
+    </label>
+    <label>
+      Orange
+      <input type="checkbox" name="hobbies.running" />
+    </label>
+  </FormField>
+  <FormField label="Car:" name="car">
+    <select>
+      <option value="volvo">Volvo</option>
+      <option value="saab">Saab</option>
+      <option value="mercedes">Mercedes</option>
+      <option value="audi">Audi</option>
+    </select>
   </FormField>
   <button type="submit">Submit</button>
 </Form>
