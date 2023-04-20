@@ -1,6 +1,6 @@
 # Smart Form
 
-Smart Form component is a developer-friendly solution for integrating form controls into your React project
+Smart Form component is a developer-friendly solution for integrating form controls into your React project.
 
 By leveraging the power of the [react-hook-form](https://react-hook-form.com/) library, it provides a reliable and efficient way to handle form validation and error handling. With automatic registration of form fields, the Smart Form component simplifies the development process and enables you to create robust and seamless forms with ease.
 
