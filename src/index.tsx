@@ -5,7 +5,7 @@ import Signup from "./features/Signup/Signup";
 
 const App = () => {
   return (
-    <div className="mx-auto mt-4 max-w-lg">
+    <div className="mx-auto mt-4 max-w-[90%] sm:max-w-lg">
       <Signup />
     </div>
   );

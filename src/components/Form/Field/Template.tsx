@@ -20,11 +20,11 @@ const FormFieldTemplate = ({
   ...rest
 }: FormFieldTemplateProps) => {
   return (
-    <div className="flex flex-col" {...rest}>
-      <div className="flex w-full items-center">
+    <div className="flex flex-col flex-wrap" {...rest}>
+      <div className="flex w-full flex-col sm:flex-row sm:items-center">
         <label
           htmlFor={name as string}
-          className="block w-24 pr-2 text-right font-medium text-gray-700"
+          className="block pr-2 font-medium text-gray-700 sm:w-24 sm:text-right"
         >
           {<>{required && <span className="text-red-500">*&nbsp;</span>}</>}
           {label}
@@ -32,7 +32,7 @@ const FormFieldTemplate = ({
         {children}
       </div>
 
-      <span className="mb-2 ml-24 w-auto text-xs text-red-500">
+      <span className="mb-2 w-auto text-sm text-red-500 sm:ml-24">
         {error || <>&nbsp;</>}
       </span>
     </div>
