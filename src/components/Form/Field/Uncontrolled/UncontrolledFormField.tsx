@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback } from "react";
+import React, { ReactNode, useCallback, useMemo } from "react";
 import {
   FieldErrors,
   FieldValues,
@@ -7,6 +7,8 @@ import {
   UseFormRegister,
 } from "react-hook-form";
 import FormFieldTemplate from "../Template";
+import { useFormContext } from "../../FormContext";
+import useIsFieldRequired from "../useIsFieldRequired";
 
 export type UncontrolledFormFieldProps<T extends FieldValues> = {
   /* Name of the form field */
@@ -42,73 +44,63 @@ export type UncontrolledFormFieldProps<T extends FieldValues> = {
 const UncontrolledFormField = <T extends FieldValues>({
   label,
   name: nameFromField,
-  register,
-  error,
+  register: registerFromProps,
+  error: errorFromProps,
   children,
   options,
   ...rest
 }: UncontrolledFormFieldProps<T>) => {
-  const isRequired = useCallback(() => {
-    const req = options?.required;
-    if (req !== undefined) {
-      if (typeof req === "string") {
-        return true;
-      } else if (typeof req === "boolean") {
-        return req;
-      } else {
-        return req.value;
-      }
-    }
-    return false;
-  }, [options?.required]);
+  const form = useFormContext<T>();
+  const register = registerFromProps ?? form.register;
+  const error =
+    errorFromProps ??
+    (nameFromField ? form.formState.errors[nameFromField] : undefined);
+  const isRequired = useIsFieldRequired(options?.required);
 
-  const registerChildren = (
-    children: ReactNode,
-    hasMultiple: boolean
-  ): ReactNode => {
-    if (register === undefined) {
-      return children;
-    }
-    return React.Children.map(children, (child) => {
-      if (React.isValidElement(child)) {
-        let newChildren: ReactNode = null;
-        if (child.props.children) {
-          hasMultiple = true;
-          newChildren = registerChildren(child.props.children, hasMultiple);
+  const registerChildren = useCallback(
+    (children: ReactNode, hasMultiple: boolean): ReactNode => {
+      return React.Children.map(children, (child) => {
+        if (React.isValidElement(child)) {
+          let newChildren: ReactNode = null;
+          if (child.props.children) {
+            hasMultiple = true;
+            newChildren = registerChildren(child.props.children, hasMultiple);
+          }
+
+          const name = child.props.name || nameFromField;
+
+          if (
+            name === undefined ||
+            !(
+              child.type === "input" ||
+              child.type === "select" ||
+              typeof child.type === "function" ||
+              typeof child.type === "object"
+            )
+          ) {
+            // don't register without name
+            // don't register elements that are not inputs, selects or custom components
+            return React.cloneElement(child, child.props, newChildren);
+          }
+
+          const registerProps = register(name, options);
+
+          return React.cloneElement(
+            child,
+            {
+              id: hasMultiple ? undefined : nameFromField,
+              error: error?.message ? true : undefined,
+              ...registerProps,
+              ...child.props,
+            },
+            newChildren
+          );
         }
-
-        const name = child.props.name || nameFromField;
-
-        if (
-          name === undefined ||
-          !(
-            child.type === "input" ||
-            child.type === "select" ||
-            typeof child.type === "function" ||
-            typeof child.type === "object"
-          )
-        ) {
-          // don't register without name
-          // don't register elements that are not inputs, selects or custom components
-          return React.cloneElement(child, child.props, newChildren);
-        }
-
-        const registerProps = register(name, options);
-
-        return React.cloneElement(
-          child,
-          {
-            id: hasMultiple ? undefined : nameFromField,
-            error: error?.message ? true : undefined,
-            ...registerProps,
-            ...child.props,
-          },
-          newChildren
-        );
-      }
-      return child;
-    });
-  };
+        return child;
+      });
+    },
+    [error?.message, nameFromField, options, register]
+  );
 
   const registeredChildren = registerChildren(children, false);
 
@@ -116,7 +108,7 @@ const UncontrolledFormField = <T extends FieldValues>({
     <FormFieldTemplate
       name={nameFromField as string}
       label={label}
-      required={isRequired()}
+      required={isRequired}
       error={error?.message as React.ReactNode}
       {...rest}
     >

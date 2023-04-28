@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   Control,
   FieldValues,
@@ -8,6 +8,8 @@ import {
   useController,
 } from "react-hook-form";
 import FormFieldTemplate from "../Template";
+import { useFormContext } from "../../FormContext";
+import useIsFieldRequired from "../useIsFieldRequired";
 
 export type ControlledFormFieldProps<T extends FieldValues> = {
   /* 	"control" object provided by invoking useForm */
@@ -45,18 +47,21 @@ export type ControlledFormFieldProps<T extends FieldValues> = {
  *</FormField>
  */
 const ControlledFormField = <T extends FieldValues>({
-  control,
   name,
   label,
   children,
   options,
   ...rest
 }: ControlledFormFieldProps<T>) => {
+  const form = useFormContext<T>();
+
   const controller = useController({
-    control,
+    control: form.control,
     name,
     rules: options,
   });
+
+  const isRequired = useIsFieldRequired(options?.required);
 
   const { fieldState } = controller;
   return (
@@ -64,6 +69,7 @@ const ControlledFormField = <T extends FieldValues>({
       name={name}
       label={label}
       error={fieldState.error?.message as React.ReactNode}
+      required={isRequired}
       {...rest}
     >
       {children(controller)}
